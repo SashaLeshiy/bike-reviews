@@ -1,14 +1,15 @@
 export const useAuth = () => {
   const user = useState<User | null>('user', () => null)
-  const token = useState<string | null>('token', () => null)
-  
   const isAuthenticated = computed(() => !!user.value)
+  const loading = useState<boolean>('authLoading', () => true)
 
-  // Функция входа через Telegram
   const loginWithTelegram = async (telegramData: any) => {
+    loading.value = true
+    console.log('telegram data', telegramData)
     try {
       console.log('🔐 Attempting login with Telegram...')
       
+      // Отправляем запрос - токен автоматически сохранится в cookie
       const result = await $fetch('/api/auth/telegram', {
         method: 'POST',
         body: telegramData
@@ -18,10 +19,7 @@ export const useAuth = () => {
       
       if (result.success) {
         user.value = result.user
-        token.value = result.token
-        
         if (process.client) {
-          localStorage.setItem('auth_token', result.token)
           localStorage.setItem('user_data', JSON.stringify(result.user))
         }
         
@@ -34,59 +32,96 @@ export const useAuth = () => {
     } catch (error) {
       console.error('❌ Login error:', error)
       return { success: false, error: error.message }
+    } finally {
+      loading.value = false
     }
   }
 
   // Функция выхода
-  const logout = () => {
-    user.value = null
-    token.value = null
-    
-    if (process.client) {
-      localStorage.removeItem('auth_token')
-      localStorage.removeItem('user_data')
+  const logout = async () => {
+    try {
+      await $fetch('/api/auth/logout', {
+        method: 'POST'
+      })
+      
+      user.value = null
+      
+      if (process.client) {
+        localStorage.removeItem('user_data')
+      }
+      
+      console.log('👋 Logged out')
+      
+      navigateTo('/')
+    } catch (error) {
+      console.error('Logout error:', error)
     }
+  }
+
+  const fetchCurrentUser = async () => {
+    loading.value = true
     
-    console.log('👋 Logged out')
+    try {
+      if (process.client) {
+        const savedUser = localStorage.getItem('user_data')
+        if (savedUser) {
+          try {
+            user.value = JSON.parse(savedUser)
+          } catch (e) {
+            console.log(e)
+          }
+        }
+      }
+
+      const result = await $fetch('/api/auth/me', {
+        method: 'GET'
+      })
+      
+      if (result.success) {
+        user.value = result.user
+        if (process.client) {
+          localStorage.setItem('user_data', JSON.stringify(result.user))
+        }
+      } else {
+        user.value = null
+        if (process.client) {
+          localStorage.removeItem('user_data')
+        }
+      }
+    } catch (error) {
+      console.error('Failed to fetch user:', error)
+      user.value = null
+    } finally {
+      loading.value = false
+    }
   }
 
-  // Получение заголовка для авторизации
-  const getAuthHeader = () => {
-    const currentToken = token.value || (process.client ? localStorage.getItem('auth_token') : null)
-    return currentToken ? `Bearer ${currentToken}` : null
-  }
-
-  // Восстановление сессии при загрузке
-  const restoreSession = () => {
+  const restoreSession = async () => {
     if (process.client) {
       try {
-        const savedToken = localStorage.getItem('auth_token')
         const savedUser = localStorage.getItem('user_data')
-        
-        if (savedToken && savedUser) {
-          token.value = savedToken
+        if (savedUser) {
           user.value = JSON.parse(savedUser)
-          console.log(`🔄 Session restored for: ${user.value?.firstName}`)
         }
       } catch (error) {
         console.error('Failed to restore session:', error)
       }
     }
+    
+    await fetchCurrentUser()
   }
 
-  // Автоматически восстанавливаем сессию
   if (process.client) {
     restoreSession()
   }
 
-  // Возвращаем все функции и состояния
   return {
     user: readonly(user),
-    token: readonly(token),
     isAuthenticated,
+    loading: readonly(loading),
     loginWithTelegram,
     logout,
-    getAuthHeader,
+    fetchCurrentUser,
     restoreSession
   }
 }

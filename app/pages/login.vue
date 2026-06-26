@@ -58,7 +58,8 @@ const testLogin = async () => {
     last_name: 'Пользователь',
     username: 'test_user',
     photo_url: '',
-    auth_date: Math.floor(Date.now() / 1000).toString()
+    auth_date: Math.floor(Date.now() / 1000).toString(),
+    is_test: true
   }
   
   const result = await loginWithTelegram(testUser)

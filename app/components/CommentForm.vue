@@ -34,7 +34,7 @@ const props = defineProps({
 
 const emit = defineEmits(['comment-added'])
 
-const { isAuthenticated, getAuthHeader } = useAuth()
+const { isAuthenticated } = useAuth()
 const content = ref('')
 const loading = ref(false)
 
@@ -44,24 +44,20 @@ const submitComment = async () => {
   loading.value = true
   
   try {
-    const authHeader = getAuthHeader()
-    
     const result = await $fetch('/api/comments', {
       method: 'POST',
       body: {
         bikeId: props.bikeId,
         content: content.value.trim()
       },
-      headers: {
-        'Authorization': authHeader
-      }
+      credentials: 'include'
     })
     
     if (result.success) {
       content.value = ''
       emit('comment-added')
     } else {
-      alert('Не удалось отправить комментарий')
+      alert('Не удалось отправить комментарий: ' + (result.error || 'Неизвестная ошибка'))
     }
   } catch (error) {
     console.error('Failed to post comment:', error)
@@ -89,6 +85,7 @@ textarea {
   font-size: 14px;
   resize: vertical;
   transition: border-color 0.2s;
+  font-family: inherit;
 }
 
 textarea:focus {

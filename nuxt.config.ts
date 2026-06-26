@@ -4,6 +4,8 @@ export default defineNuxtConfig({
     mongodbUri: process.env.MONGODB_URI,
     telegramBotToken: process.env.TELEGRAM_BOT_TOKEN,
     jwtSecret: process.env.JWT_SECRET,
+    cookieDomain: process.env.COOKIE_DOMAIN || 'localhost',
+    cookieSecure: process.env.COOKIE_SECURE === 'true',
     public: {
       telegramBotUsername: process.env.NUXT_PUBLIC_TELEGRAM_BOT_USERNAME
     }

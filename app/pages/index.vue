@@ -57,7 +57,7 @@
 <script setup>
 import { useAuth } from '~/composables/useAuth'
 
-const { isAuthenticated, user, logout, getAuthHeader } = useAuth()
+const { isAuthenticated, user, logout } = useAuth()
 const bikes = ref([])
 const loading = ref(true)
 
@@ -75,9 +75,9 @@ const fetchBikes = async () => {
   }
 }
 
-const handleLogout = () => {
+const handleLogout = async () => {
   if (confirm('Вы уверены, что хотите выйти?')) {
-    logout()
+    await logout()
   }
 }
 
