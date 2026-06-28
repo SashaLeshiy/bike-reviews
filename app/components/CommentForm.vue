@@ -1,27 +1,53 @@
 <template>
   <div v-if="isAuthenticated" class="comment-form">
-    <form @submit.prevent="submitComment">
-      <div class="form-group">
-        <textarea
+    <v-card class="comment-form__card" variant="outlined" rounded="lg">
+      <v-card-text>
+        <v-textarea
           v-model="content"
           placeholder="Напишите комментарий..."
           rows="3"
           maxlength="1000"
           required
+          variant="outlined"
+          density="comfortable"
+          hide-details
+          counter="1000"
+          class="comment-form__textarea"
         />
-        <div class="character-count">{{ content.length }}/1000</div>
-      </div>
+      </v-card-text>
       
-      <button type="submit" :disabled="loading || !content.trim()">
-        {{ loading ? 'Отправка...' : 'Отправить комментарий' }}
-      </button>
-    </form>
+      <v-card-actions class="pa-4 pt-0">
+        <v-spacer />
+        <v-btn
+          type="submit"
+          color="primary"
+          variant="elevated"
+          :loading="loading"
+          :disabled="loading || !content.trim()"
+          prepend-icon="mdi-send"
+          @click="submitComment"
+        >
+          {{ loading ? 'Отправка...' : 'Отправить комментарий' }}
+        </v-btn>
+      </v-card-actions>
+    </v-card>
   </div>
   
-  <div v-else class="login-prompt">
-    <p>Авторизуйтесь через Telegram, чтобы оставить комментарий</p>
-    <NuxtLink to="/login" class="login-link">Войти</NuxtLink>
-  </div>
+  <v-card v-else class="comment-form__prompt" variant="tonal" rounded="lg">
+    <v-card-text class="pa-4 text-center">
+      <v-icon icon="mdi-lock" size="32" color="grey-lighten-1" />
+      <p class="text-body-1 text-grey mt-2">Авторизуйтесь через Telegram, чтобы оставить комментарий</p>
+      <v-btn
+        to="/login"
+        color="primary"
+        variant="elevated"
+        prepend-icon="mdi-login"
+        class="mt-2"
+      >
+        Войти
+      </v-btn>
+    </v-card-text>
+  </v-card>
 </template>
 
 <script setup>
@@ -70,82 +96,30 @@ const submitComment = async () => {
 
 <style scoped>
 .comment-form {
-  margin-top: 24px;
+  margin-top: 16px;
 }
 
-.form-group {
-  position: relative;
+.comment-form__card {
+  border: 1px solid #e2e8f0 !important;
 }
 
-textarea {
-  width: 100%;
-  padding: 12px;
-  border: 2px solid #e0e0e0;
-  border-radius: 8px;
+.comment-form__textarea :deep(.v-field) {
+  border-radius: 8px !important;
+}
+
+.comment-form__textarea :deep(.v-field__input) {
   font-size: 14px;
-  resize: vertical;
-  transition: border-color 0.2s;
-  font-family: inherit;
 }
 
-textarea:focus {
-  outline: none;
-  border-color: #4a90d9;
+.comment-form__prompt {
+  margin-top: 16px;
+  border: 1px solid #e2e8f0 !important;
+  background: #f8fafc !important;
 }
 
-.character-count {
-  text-align: right;
-  font-size: 12px;
-  color: #999;
-  margin-top: 4px;
-}
-
-button {
-  margin-top: 12px;
-  padding: 12px 24px;
-  background: #4a90d9;
-  color: white;
-  border: none;
-  border-radius: 8px;
-  font-size: 14px;
-  font-weight: 500;
-  cursor: pointer;
-  transition: background 0.2s;
-}
-
-button:hover:not(:disabled) {
-  background: #357abd;
-}
-
-button:disabled {
-  opacity: 0.5;
-  cursor: not-allowed;
-}
-
-.login-prompt {
-  margin-top: 24px;
-  padding: 24px;
-  background: #f8f9fa;
-  border-radius: 8px;
-  text-align: center;
-}
-
-.login-prompt p {
-  margin: 0 0 12px 0;
-  color: #666;
-}
-
-.login-link {
-  display: inline-block;
-  padding: 10px 24px;
-  background: #4a90d9;
-  color: white;
-  text-decoration: none;
-  border-radius: 8px;
-  font-weight: 500;
-}
-
-.login-link:hover {
-  background: #357abd;
+.comment-form__prompt .v-card-text {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
 }
 </style>

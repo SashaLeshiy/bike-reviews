@@ -1,44 +1,65 @@
 <template>
-  <div class="login-page">
-    <div class="login-container">
-      <div class="login-header">
-        <h1>👋 Добро пожаловать!</h1>
-        <p>Войдите через Telegram, чтобы оставлять комментарии</p>
-      </div>
-      
-      <div class="login-content">
-        <TelegramLogin />
-        
-        <div class="login-info">
-          <div class="info-item">
-            <span class="icon">✅</span>
-            <span>Безопасная авторизация</span>
-          </div>
-          <div class="info-item">
-            <span class="icon">🔒</span>
-            <span>Ваши данные защищены</span>
-          </div>
-          <div class="info-item">
-            <span class="icon">💬</span>
-            <span>Оставляйте комментарии</span>
-          </div>
-        </div>
-      </div>
-
-      <div class="auth-section test-auth">
-        <h3>Тестовый вход (только для разработки)</h3>
-        <button @click="testLogin" class="test-btn">
-          🧪 Войти как тестовый пользователь
-        </button>
-      </div>
-      
-      <div class="login-footer">
-        <NuxtLink to="/" class="back-link">
-          ← Вернуться на главную
-        </NuxtLink>
-      </div>
-    </div>
-  </div>
+  <v-container class="login-page" fluid>
+    <v-row justify="center" align="center" class="login-page__row">
+      <v-col cols="12" sm="8" md="6" lg="4">
+        <v-card class="login-page__card" elevation="12" rounded="lg">
+          <v-card-text class="pa-6">
+            <div class="text-center mb-6">
+              <h1 class="text-h4 font-weight-bold text-grey-darken-3">Добро пожаловать</h1>
+              <p class="text-body-1 text-grey mt-1">Войдите через Telegram, чтобы оставлять комментарии</p>
+            </div>
+            
+            <div class="d-flex justify-center pa-4">
+              <TelegramLogin />
+            </div>
+            
+            <v-divider class="my-4">
+              <v-chip color="grey-lighten-2" text-color="grey-darken-2" size="small">
+                или
+              </v-chip>
+            </v-divider>
+            
+            <div v-if="isDev" class="mt-2">
+              <v-btn
+                @click="testLogin"
+                color="grey"
+                variant="tonal"
+                block
+                :loading="loading"
+                prepend-icon="mdi-flask"
+                size="large"
+              >
+                Тестовый вход (только для разработки)
+              </v-btn>
+            </div>
+            
+            <v-divider class="my-4" />
+            
+            <v-list class="login-page__info" bg-color="grey-lighten-4" rounded="lg">
+              <v-list-item prepend-icon="mdi-shield-check" color="primary">
+                <v-list-item-title>Безопасная авторизация</v-list-item-title>
+              </v-list-item>
+              <v-list-item prepend-icon="mdi-lock" color="primary">
+                <v-list-item-title>Ваши данные защищены</v-list-item-title>
+              </v-list-item>
+              <v-list-item prepend-icon="mdi-message-text" color="primary">
+                <v-list-item-title>Оставляйте комментарии</v-list-item-title>
+              </v-list-item>
+            </v-list>
+          </v-card-text>
+          
+          <v-card-actions class="pa-4">
+            <v-spacer />
+            <NuxtLink to="/" class="text-decoration-none">
+              <v-btn variant="text" color="grey" prepend-icon="mdi-arrow-left">
+                Вернуться на главную
+              </v-btn>
+            </NuxtLink>
+          </v-card-actions>
+        </v-card>
+      </v-col>
+    </v-row>
+  </v-container>
 </template>
 
 <script setup>
@@ -50,8 +71,13 @@ import { useAuth } from '~/composables/useAuth'
 
 const { loginWithTelegram } = useAuth()
 const router = useRouter()
+const loading = ref(false)
+
+const isDev = process.env.NODE_ENV === 'development'
 
 const testLogin = async () => {
+  loading.value = true
+  
   const testUser = {
     id: 123456789,
     first_name: 'Тестовый',
@@ -62,102 +88,54 @@ const testLogin = async () => {
     is_test: true
   }
   
-  const result = await loginWithTelegram(testUser)
-  if (result.success) {
-    router.push('/')
+  try {
+    const result = await loginWithTelegram(testUser)
+    if (result.success) {
+      router.push('/')
+    } else {
+      alert('Ошибка входа: ' + (result.error || 'Неизвестная ошибка'))
+    }
+  } catch (error) {
+    console.error('Test login error:', error)
+    alert('Произошла ошибка при входе')
+  } finally {
+    loading.value = false
   }
 }
 </script>
 
 <style scoped>
 .login-page {
-  display: flex;
-  justify-content: center;
-  align-items: center;
-  min-height: 80vh;
-  padding: 20px;
-  background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
-}
-
-.login-container {
-  max-width: 480px;
-  width: 100%;
-  background: white;
-  border-radius: 20px;
-  padding: 40px;
-  box-shadow: 0 20px 60px rgba(0, 0, 0, 0.3);
-}
-
-.login-header {
-  text-align: center;
-  margin-bottom: 32px;
-}
-
-.login-header h1 {
-  margin: 0 0 8px 0;
-  font-size: 28px;
-  color: #333;
-}
-
-.login-header p {
-  margin: 0;
-  color: #666;
-  font-size: 16px;
-}
-
-.login-content {
-  margin-bottom: 24px;
-}
-
-.login-info {
-  margin-top: 24px;
-  padding: 16px;
-  background: #f8f9fa;
-  border-radius: 12px;
-}
-
-.info-item {
+  min-height: calc(100vh - 64px);
   display: flex;
   align-items: center;
-  gap: 12px;
-  padding: 8px 0;
-  color: #555;
+  background: linear-gradient(135deg, #f8fafc 0%, #e2e8f0 100%);
 }
 
-.info-item:not(:last-child) {
-  border-bottom: 1px solid #e9ecef;
+.login-page__row {
+  min-height: calc(100vh - 64px);
 }
 
-.info-item .icon {
-  font-size: 20px;
-  width: 30px;
-  text-align: center;
+.login-page__card {
+  background: #ffffff !important;
+  border: 1px solid #e2e8f0;
 }
 
-.login-footer {
-  text-align: center;
-  padding-top: 16px;
-  border-top: 1px solid #e9ecef;
+.login-page__info {
+  border: 1px solid #e2e8f0;
 }
 
-.back-link {
-  color: #6c757d;
-  text-decoration: none;
-  font-size: 14px;
-  transition: color 0.2s;
+.login-page__info .v-list-item {
+  border-bottom: 1px solid #e2e8f0;
 }
 
-.back-link:hover {
-  color: #4a90d9;
+.login-page__info .v-list-item:last-child {
+  border-bottom: none;
 }
 
 @media (max-width: 480px) {
-  .login-container {
-    padding: 24px;
-  }
-  
-  .login-header h1 {
-    font-size: 24px;
+  .login-page {
+    padding: 16px;
   }
 }
 </style>

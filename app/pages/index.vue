@@ -1,57 +1,73 @@
 <template>
-  <div class="home-page">
-    <header class="header">
-      <div class="header-left">
-        <h1>🏍️ Мотоциклы</h1>
-        <span class="bike-count">({{ bikes.length }} шт.)</span>
-      </div>
-      
-      <div class="header-right">
-        <div v-if="isAuthenticated && user" class="user-info">
-          <img 
-            v-if="user.photoUrl" 
-            :src="user.photoUrl" 
-            :alt="user.firstName"
-            class="user-avatar"
-          />
-          <div class="user-details">
-            <span class="user-name">{{ user.firstName }}</span>
-            <span class="user-username" v-if="user.username">@{{ user.username }}</span>
-          </div>
-          <button @click="handleLogout" class="logout-btn" title="Выйти">
-            <svg width="16" height="16" viewBox="0 0 24 24" fill="none">
-              <path d="M17 7l5 5-5 5M3 12h15" stroke="currentColor" stroke-width="2" stroke-linecap="round"/>
-            </svg>
-          </button>
-        </div>
-        
-        <NuxtLink v-else to="/login" class="login-btn">
-          <svg width="20" height="20" viewBox="0 0 24 24" fill="none">
-            <path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm0 18c-4.41 0-8-3.59-8-8s3.59-8 8-8 8 3.59 8 8-3.59 8-8 8z" fill="currentColor"/>
-            <path d="M8 16l4-4-4-4M14 8l4 4-4 4" stroke="white" stroke-width="1.5" stroke-linecap="round"/>
-          </svg>
-          Войти
-        </NuxtLink>
-      </div>
-    </header>
+  <v-container class="home-page">
+    <v-row>
+      <v-col cols="12">
+        <v-card class="home-page__header" flat>
+          <v-card-title class="d-flex align-center justify-space-between flex-wrap ga-4">
+            <div class="d-flex align-center ga-2">
+              <span class="text-h4 font-weight-bold">Мотоциклы</span>
+              <v-chip size="small" color="grey-lighten-2" text-color="grey-darken-2">
+                {{ bikes.length }} шт.
+              </v-chip>
+            </div>
+            
+            <div>
+              <template v-if="isAuthenticated && user">
+                <v-menu location="bottom end" transition="scale-transition">
+                  <template v-slot:activator="{ props }">
+                    <v-btn v-bind="props" variant="text" class="home-page__user-btn">
+                      <v-avatar size="32" class="mr-2">
+                        <v-img v-if="user.photoUrl" :src="user.photoUrl" :alt="user.firstName" />
+                        <v-icon v-else icon="mdi-account" />
+                      </v-avatar>
+                      <span class="text-body-2 font-weight-medium">{{ user.firstName }}</span>
+                      <v-icon icon="mdi-chevron-down" size="18" />
+                    </v-btn>
+                  </template>
+                  <v-list>
+                    <v-list-item prepend-icon="mdi-account" title="Профиль" to="/profile" />
+                    <v-divider />
+                    <v-list-item prepend-icon="mdi-logout" title="Выйти" @click="handleLogout" />
+                  </v-list>
+                </v-menu>
+              </template>
+              
+              <v-btn v-else to="/login" color="primary" prepend-icon="mdi-login" variant="elevated">
+                Войти
+              </v-btn>
+            </div>
+          </v-card-title>
+        </v-card>
+      </v-col>
+    </v-row>
     
-    <div v-if="loading" class="loading">
-      <div class="spinner"></div>
-      <p>Загрузка мотоциклов...</p>
-    </div>
+    <v-row v-if="loading" class="home-page__loading" justify="center" align="center">
+      <v-col cols="auto" class="text-center">
+        <v-progress-circular indeterminate color="primary" size="48" width="4" />
+        <p class="text-body-1 text-grey mt-4">Загрузка мотоциклов...</p>
+      </v-col>
+    </v-row>
     
-    <div v-else-if="bikes.length === 0" class="empty">
-      <p>😕 Мотоциклы не найдены</p>
-    </div>
+    <v-row v-else-if="bikes.length === 0" class="home-page__empty" justify="center" align="center">
+      <v-col cols="auto" class="text-center">
+        <v-icon icon="mdi-motorbike-off" size="64" color="grey-lighten-2" />
+        <p class="text-h6 text-grey-darken-2 mt-4">Мотоциклы не найдены</p>
+      </v-col>
+    </v-row>
     
-    <div v-else class="bikes-grid">
-      <BikeCard 
-        v-for="bike in bikes" 
-        :key="bike.id" 
-        :bike="bike" 
-      />
-    </div>
-  </div>
+    <v-row v-else>
+      <v-col
+        v-for="bike in bikes"
+        :key="bike.id"
+        cols="12"
+        sm="6"
+        md="4"
+        lg="3"
+      >
+        <BikeCard :bike="bike" />
+      </v-col>
+    </v-row>
+  </v-container>
 </template>
 
 <script setup>
@@ -88,153 +104,44 @@ onMounted(() => {
 
 <style scoped>
 .home-page {
-  max-width: 1200px;
-  margin: 0 auto;
-  padding: 20px;
+  padding: 24px;
+  max-width: 1366px;
 }
 
-.header {
-  display: flex;
-  justify-content: space-between;
-  align-items: center;
-  flex-wrap: wrap;
-  gap: 16px;
-  margin-bottom: 32px;
-  padding-bottom: 16px;
-  border-bottom: 2px solid #f0f0f0;
+.home-page__header {
+  padding: 16px 0;
+  border-bottom: 1px solid #e2e8f0;
+  border-radius: 0 !important;
+  box-shadow: none !important;
 }
 
-.header-left {
-  display: flex;
-  align-items: baseline;
-  gap: 8px;
-}
-
-.header-left h1 {
-  margin: 0;
-  font-size: 28px;
-  color: #333;
-}
-
-.bike-count {
-  color: #999;
-  font-size: 14px;
-}
-
-.header-right {
-  display: flex;
-  align-items: center;
-  gap: 12px;
-}
-
-.user-info {
-  display: flex;
-  align-items: center;
-  gap: 12px;
-  padding: 6px 12px 6px 6px;
-  background: #f8f9fa;
-  border-radius: 50px;
-}
-
-.user-avatar {
-  width: 36px;
-  height: 36px;
-  border-radius: 50%;
-  object-fit: cover;
-}
-
-.user-details {
-  display: flex;
-  flex-direction: column;
-}
-
-.user-name {
+.home-page__user-btn {
+  text-transform: none !important;
   font-weight: 500;
-  color: #333;
-  font-size: 14px;
+  padding: 4px 12px;
+  border-radius: 50px !important;
+  border: 1px solid #e2e8f0 !important;
 }
 
-.user-username {
-  font-size: 12px;
-  color: #999;
+.home-page__user-btn:hover {
+  background: #f8fafc !important;
 }
 
-.logout-btn {
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  width: 32px;
-  height: 32px;
-  background: transparent;
-  border: 1px solid #dee2e6;
-  border-radius: 50%;
-  cursor: pointer;
-  color: #666;
-  transition: all 0.2s;
-}
-
-.logout-btn:hover {
-  background: #fee;
-  border-color: #dc3545;
-  color: #dc3545;
-}
-
-.login-btn {
-  display: flex;
-  align-items: center;
-  gap: 8px;
-  padding: 10px 20px;
-  background: #0088cc;
-  color: white;
-  text-decoration: none;
-  border-radius: 50px;
-  font-weight: 500;
-  transition: background 0.2s;
-}
-
-.login-btn:hover {
-  background: #006699;
-}
-
-.bikes-grid {
-  display: grid;
-  grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
-  gap: 24px;
-}
-
-.loading, .empty {
-  text-align: center;
-  padding: 60px 0;
-  color: #999;
-}
-
-.spinner {
-  display: inline-block;
-  width: 40px;
-  height: 40px;
-  border: 4px solid #f3f3f3;
-  border-top: 4px solid #0088cc;
-  border-radius: 50%;
-  animation: spin 1s linear infinite;
-}
-
-@keyframes spin {
-  0% { transform: rotate(0deg); }
-  100% { transform: rotate(360deg); }
+.home-page__loading,
+.home-page__empty {
+  min-height: 400px;
+  padding: 40px 0;
 }
 
 @media (max-width: 768px) {
-  .header {
-    flex-direction: column;
-    align-items: stretch;
+  .home-page {
+    padding: 16px;
   }
-  
-  .header-left {
-    justify-content: center;
-  }
-  
-  .header-right {
-    justify-content: center;
+}
+
+@media (max-width: 480px) {
+  .home-page {
+    padding: 12px;
   }
 }
 </style>

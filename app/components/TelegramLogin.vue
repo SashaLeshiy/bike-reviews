@@ -1,42 +1,65 @@
 <template>
-  <div class="telegram-login-wrapper">
-    <div id="telegram-login-container"></div>
+  <div class="telegram-login">
+    <div v-if="isWidgetSupported" id="telegram-login-container" class="telegram-login__widget"></div>
     
-    <div v-if="!isWidgetSupported" class="mobile-login">
-      <p>Для входа нажмите кнопку ниже</p>
-      <a 
-        :href="telegramAuthUrl" 
-        target="_blank" 
-        rel="noopener noreferrer"
-        class="telegram-btn"
-      >
-        <svg viewBox="0 0 24 24" width="24" height="24">
-          <path fill="white" d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm4.64 6.8c-.15 1.58-.8 5.42-1.13 7.19-.14.75-.42 1-.68 1.03-.58.05-1.02-.38-1.58-.75-.88-.58-1.38-.94-2.23-1.5-.99-.65-.35-1.01.22-1.59.15-.15 2.71-2.48 2.76-2.69.01-.03.01-.14-.1-.2-.11-.06-.27-.04-.39-.02-.16.03-2.64 1.68-2.64 1.68l-2.91-1.96c-.33-.22-.7-.47-.01-.95.78-.53 3.15-1.99 3.15-1.99l.01-.01c.57-.38 1.31-.53 2.02-.43.85.12 1.54.59 1.92 1.41.38.82.42 1.77.19 2.67z"/>
-        </svg>
-        Войти через Telegram
-      </a>
+    <div v-if="isLoading" class="d-flex flex-column align-center ga-2 pa-4">
+      <v-progress-circular indeterminate color="primary" size="32" />
+      <span class="text-caption text-grey">Загрузка виджета...</span>
+    </div>
+    
+    <v-card v-if="error" class="telegram-login__error" variant="tonal" color="error">
+      <v-card-text class="d-flex flex-column align-center ga-2 pa-4">
+        <v-icon icon="mdi-alert-circle" color="error" size="28" />
+        <span class="text-body-2 text-error">{{ error }}</span>
+        <v-btn size="small" color="primary" variant="text" @click="retryInit">
+          Попробовать снова
+        </v-btn>
+      </v-card-text>
+    </v-card>
+    
+    <div v-if="!isWidgetSupported && !isLoading && !error" class="telegram-login__mobile">
+      <div class="d-flex flex-column align-center ga-3 pa-4">
+        <v-icon icon="mdi-cellphone" size="40" color="grey-lighten-1" />
+        <p class="text-body-2 text-grey text-center">Для входа нажмите кнопку ниже</p>
+        <v-btn
+          :href="telegramAuthUrl"
+          target="_blank"
+          rel="noopener noreferrer"
+          color="primary"
+          variant="elevated"
+          prepend-icon="mdi-telegram"
+          size="large"
+          class="telegram-login__mobile-btn"
+        >
+          Войти через Telegram
+        </v-btn>
+      </div>
     </div>
   </div>
 </template>
 
 <script setup lang="ts">
 import { useAuth } from '~/composables/useAuth'
-import { onMounted, ref, computed } from 'vue'
+import { onMounted, ref, computed, onUnmounted } from 'vue'
 
 const { loginWithTelegram } = useAuth()
 const router = useRouter()
 const config = useRuntimeConfig()
-const isWidgetSupported = ref(true)
 
-// URL для прямой авторизации (мобильные устройства)
+const isWidgetSupported = ref(true)
+const isLoading = ref(true)
+const error = ref<string | null>(null)
+
 const telegramAuthUrl = computed(() => {
   const botUsername = config.public.telegramBotUsername
   const redirectUrl = encodeURIComponent(window.location.origin + '/api/auth/telegram')
   return `https://t.me/${botUsername}?startauth=${redirectUrl}`
 })
 
-// Обработчик успешной авторизации
 const handleTelegramAuth = async (user: any) => {
+  isLoading.value = true
+  error.value = null
+  
   try {
     console.log('📱 Telegram login widget response:', user)
     
@@ -45,53 +68,75 @@ const handleTelegramAuth = async (user: any) => {
     if (result.success) {
       router.push('/')
     } else {
-      alert('Не удалось войти: ' + (result.error || 'Неизвестная ошибка'))
+      error.value = result.error || 'Не удалось войти в систему'
+      isWidgetSupported.value = false
     }
-  } catch (error) {
-    console.error('Login error:', error)
-    alert('Произошла ошибка при входе')
+  } catch (err) {
+    console.error('Login error:', err)
+    error.value = 'Произошла ошибка при входе'
+    isWidgetSupported.value = false
+  } finally {
+    isLoading.value = false
   }
 }
 
-// Инициализация виджета Telegram
 const initTelegramWidget = () => {
+  if (typeof window === 'undefined') {
+    isLoading.value = false
+    return
+  }
+  
   try {
-    // Проверяем, что мы на клиенте
-    if (typeof window === 'undefined') return
+    isLoading.value = true
+    error.value = null
     
-    // Проверяем наличие Telegram виджета
     const container = document.getElementById('telegram-login-container')
     if (!container) {
       console.warn('Telegram login container not found')
+      isWidgetSupported.value = false
+      isLoading.value = false
       return
     }
 
-    // Проверяем, не загружен ли уже виджет
     if (container.hasChildNodes()) {
       console.log('Telegram widget already loaded')
+      isLoading.value = false
       return
     }
 
-    // Создаем скрипт для виджета
     const script = document.createElement('script')
     script.src = 'https://telegram.org/js/telegram-widget.js?22'
     script.async = true
     script.setAttribute('data-telegram-login', config.public.telegramBotUsername)
     script.setAttribute('data-size', 'large')
+    script.setAttribute('data-radius', '12')
     script.setAttribute('data-request-access', 'write')
     script.setAttribute('data-onauth', 'onTelegramAuth(user)')
     
-    // Добавляем обработчик глобально
     ;(window as any).onTelegramAuth = handleTelegramAuth
     
-    // Добавляем скрипт в контейнер
     container.appendChild(script)
     
     console.log('✅ Telegram widget initialized')
-  } catch (error) {
-    console.error('Failed to initialize Telegram widget:', error)
+    isWidgetSupported.value = true
+    isLoading.value = false
+    
+  } catch (err) {
+    console.error('Failed to initialize Telegram widget:', err)
+    error.value = 'Не удалось загрузить виджет Telegram'
     isWidgetSupported.value = false
+    isLoading.value = false
   }
+}
+
+const retryInit = () => {
+  const container = document.getElementById('telegram-login-container')
+  if (container) {
+    container.innerHTML = ''
+  }
+  isWidgetSupported.value = true
+  error.value = null
+  initTelegramWidget()
 }
 
 onMounted(() => {
@@ -106,53 +151,40 @@ onUnmounted(() => {
 </script>
 
 <style scoped>
-.telegram-login-wrapper {
+.telegram-login {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  width: 100%;
+}
+
+.telegram-login__widget {
   display: flex;
   justify-content: center;
   align-items: center;
-  min-height: 100px;
+  min-height: 60px;
+  width: 100%;
 }
 
-#telegram-login-container {
-  display: flex;
-  justify-content: center;
-  align-items: center;
+.telegram-login__error {
+  width: 100%;
+  max-width: 320px;
+  border: 1px solid #ef4444 !important;
 }
 
-.mobile-login {
-  text-align: center;
-  padding: 20px;
+.telegram-login__mobile {
+  width: 100%;
+  max-width: 320px;
 }
 
-.mobile-login p {
-  margin-bottom: 16px;
-  color: #666;
-}
-
-.telegram-btn {
-  display: inline-flex;
-  align-items: center;
-  gap: 10px;
-  padding: 12px 24px;
-  background: #0088cc;
-  color: white;
-  text-decoration: none;
-  border-radius: 8px;
-  font-weight: 500;
-  transition: background 0.3s;
-}
-
-.telegram-btn:hover {
-  background: #006699;
-}
-
-.telegram-btn svg {
-  flex-shrink: 0;
+.telegram-login__mobile-btn {
+  width: 100%;
+  text-transform: none !important;
 }
 
 @media (max-width: 480px) {
-  #telegram-login-container {
-    transform: scale(0.9);
+  .telegram-login__widget {
+    transform: scale(0.95);
   }
 }
 </style>

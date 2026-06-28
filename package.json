@@ -10,6 +10,7 @@
     "postinstall": "nuxt prepare"
   },
   "dependencies": {
+    "@mdi/font": "^7.4.47",
     "@types/jsonwebtoken": "^9.0.10",
     "cookie": "^2.0.0",
     "dotenv": "^17.4.2",
@@ -20,9 +21,11 @@
     "nuxt-mongoose": "^1.1.2",
     "pinia": "^3.0.4",
     "vue": "^3.5.38",
-    "vue-router": "^5.1.0"
+    "vue-router": "^5.1.0",
+    "vuetify": "^4.1.2"
   },
   "devDependencies": {
-    "@types/node": "^26.0.0"
+    "@types/node": "^26.0.0",
+    "vite-plugin-vuetify": "^2.1.3"
   }
 }
