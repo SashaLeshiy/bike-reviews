@@ -74,7 +74,7 @@
                 </template>
                 <v-list-item-title>
                   <a
-                    :href="bike.url"
+                    :href="bike.link"
                     target="_blank"
                     rel="noopener noreferrer"
                     class="text-primary text-decoration-none font-weight-medium"
