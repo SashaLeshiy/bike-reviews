@@ -39,7 +39,7 @@
       <p class="text-body-1 text-grey mt-2">Авторизуйтесь через Telegram, чтобы оставить комментарий</p>
       <v-btn
         to="/login"
-        color="primary"
+        color="primary-darken-2"
         variant="elevated"
         prepend-icon="mdi-login"
         class="mt-2"
