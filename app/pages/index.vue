@@ -33,7 +33,7 @@
               </template>
               
               <v-btn v-else to="/login" color="primary-darken-2" prepend-icon="mdi-login" variant="elevated">
-                Войти
+                Вход
               </v-btn>
             </div>
           </v-card-title>
