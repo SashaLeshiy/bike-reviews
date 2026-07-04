@@ -10,6 +10,8 @@
                 {{ bikes.length }} шт.
               </v-chip>
             </div>
+
+            {{ user.firstName }}
             
             <div>
               <template v-if="isAuthenticated && user">
@@ -17,8 +19,8 @@
                   <template v-slot:activator="{ props }">
                     <v-btn v-bind="props" variant="text" class="home-page__user-btn">
                       <v-avatar size="32" class="mr-2">
-                        <v-img v-if="user.photoUrl" :src="user.photoUrl" :alt="user.firstName" />
-                        <v-icon v-else icon="mdi-account" />
+                        <!-- <v-img v-if="user.photoUrl" :src="user.photoUrl" :alt="user.firstName" /> -->
+                        <v-icon icon="mdi-account" />
                       </v-avatar>
                       <span class="text-body-2 font-weight-medium">{{ user.firstName }}</span>
                       <v-icon icon="mdi-chevron-down" size="18" />
