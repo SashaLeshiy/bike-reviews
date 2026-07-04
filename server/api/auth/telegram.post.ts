@@ -1,6 +1,7 @@
 import jwt from 'jsonwebtoken'
 import crypto from 'crypto'
 import User from '~~/server/models/User'
+import { parseCookies } from 'h3' // ✅ Добавляем импорт
 
 export default defineEventHandler(async (event) => {
   if (event.method !== 'POST') {
@@ -29,7 +30,6 @@ export default defineEventHandler(async (event) => {
     } = body
 
     const isTestUser = is_test === true && process.env.NODE_ENV === 'development'
-    console.log('🔍 isTestUser:', isTestUser)
     if (!isTestUser) {
       const secret = crypto
         .createHash('sha256')
@@ -76,6 +76,7 @@ export default defineEventHandler(async (event) => {
       user.photoUrl = photo_url || user.photoUrl
       user.lastLogin = new Date()
       await user.save()
+      console.log(`✅ User updated: ${user.firstName}`)
     } else {
       user = new User({
         telegramId: id.toString(),
@@ -102,18 +103,30 @@ export default defineEventHandler(async (event) => {
     )
     console.log('🔐 JWT token created:', token.substring(0, 20) + '...')
 
-    setCookie(event, 'auth_token', token, {
+    // ✅ Устанавливаем cookie с явными параметрами
+    const cookieOptions = {
       httpOnly: true,
       secure: config.cookieSecure || false,
       sameSite: 'lax',
       maxAge: 60 * 60 * 24 * 7,
       path: '/',
-      domain: config.cookieDomain || 'localhost'
-    })
+      domain: config.cookieDomain || undefined // Не указываем domain для localhost
+    }
+    
+    console.log('🍪 Setting cookie with options:', cookieOptions)
+    
+    setCookie(event, 'auth_token', token, cookieOptions)
 
-    // ✅ Проверяем, что cookie установлен
-    const cookies = parseCookies(event)
-    console.log('🍪 Cookie after set:', Object.keys(cookies))
+    // ✅ Проверяем заголовки ответа
+    const headers = getHeaders(event)
+    console.log('📋 Response headers:', Object.keys(headers))
+    
+    // ✅ Проверяем, есть ли Set-Cookie в заголовках
+    const setCookieHeader = getResponseHeader(event, 'set-cookie')
+    console.log('🍪 Set-Cookie header:', setCookieHeader)
+
+    // ✅ НЕ ПАРСИМ ВХОДЯЩИЕ COOKIE (они пустые, это нормально)
+    // const cookies = parseCookies(event) // ❌ Убираем эту проверку
 
     return {
       success: true,
