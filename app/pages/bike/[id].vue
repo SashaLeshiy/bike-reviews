@@ -46,28 +46,8 @@
             </v-chip>
           </div>
           
-          <v-card class="bike-detail__details mt-4" variant="outlined" rounded="lg">
+          <v-card class="bike-detail__details mt-4">
             <v-list>
-              <v-list-item>
-                <template v-slot:prepend>
-                  <v-icon icon="mdi-numeric" color="grey-darken-1" />
-                </template>
-                <v-list-item-title>
-                  <span class="text-grey-darken-1">ID:</span>
-                  <span class="font-weight-medium ml-2">{{ bike.id }}</span>
-                </v-list-item-title>
-              </v-list-item>
-              
-              <v-list-item>
-                <template v-slot:prepend>
-                  <v-icon icon="mdi-calendar" color="grey-darken-1" />
-                </template>
-                <v-list-item-title>
-                  <span class="text-grey-darken-1">Дата добавления:</span>
-                  <span class="font-weight-medium ml-2">{{ formatDate(bike.createdAt) }}</span>
-                </v-list-item-title>
-              </v-list-item>
-              
               <v-list-item>
                 <template v-slot:prepend>
                   <v-icon icon="mdi-link" color="grey-darken-1" />

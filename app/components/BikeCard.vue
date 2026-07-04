@@ -24,9 +24,6 @@
           <v-icon icon="mdi-message-text" size="16" />
           {{ bike.commentsCount || 0 }}
         </span>
-        <span class="text-grey-lighten-1 text-caption">
-          {{ formatDate(bike.createdAt) }}
-        </span>
       </div>
     </v-card-text>
   </v-card>
@@ -42,14 +39,6 @@ defineProps({
 
 const goTo = (path) => {
   navigateTo(path)
-}
-
-const formatDate = (date) => {
-  return new Date(date).toLocaleDateString('ru-RU', {
-    day: '2-digit',
-    month: '2-digit',
-    year: 'numeric'
-  })
 }
 </script>
 
