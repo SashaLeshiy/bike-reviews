@@ -10,6 +10,12 @@ export default defineEventHandler(async (event) => {
   try {
     const body = await readBody(event)
     const config = useRuntimeConfig()
+
+    console.log('📥 Telegram auth data received:', {
+      id: body.id,
+      username: body.username,
+      firstName: body.first_name
+    })
     
     const {
       id,
@@ -23,7 +29,7 @@ export default defineEventHandler(async (event) => {
     } = body
 
     const isTestUser = is_test === true && process.env.NODE_ENV === 'development'
-    
+    console.log('🔍 isTestUser:', isTestUser)
     if (!isTestUser) {
       const secret = crypto
         .createHash('sha256')
@@ -81,6 +87,7 @@ export default defineEventHandler(async (event) => {
         lastLogin: new Date()
       })
       await user.save()
+      console.log(`✅ New user created: ${user.firstName}`)
     }
 
     const token = jwt.sign(
@@ -93,6 +100,7 @@ export default defineEventHandler(async (event) => {
       config.jwtSecret,
       { expiresIn: '7d' }
     )
+    console.log('🔐 JWT token created:', token.substring(0, 20) + '...')
 
     setCookie(event, 'auth_token', token, {
       httpOnly: true,
@@ -102,6 +110,10 @@ export default defineEventHandler(async (event) => {
       path: '/',
       domain: config.cookieDomain || 'localhost'
     })
+
+    // ✅ Проверяем, что cookie установлен
+    const cookies = parseCookies(event)
+    console.log('🍪 Cookie after set:', Object.keys(cookies))
 
     return {
       success: true,

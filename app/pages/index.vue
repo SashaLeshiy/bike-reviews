@@ -8,7 +8,6 @@
               <span class="text-h4 font-weight-bold">BIKES REVIEWS</span>
               <v-chip size="small" variant="outlined">
                 {{ bikes.length }} шт.
-                {{ user }} - имя
               </v-chip>
             </div>
             

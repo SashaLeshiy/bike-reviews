@@ -12,7 +12,8 @@ export const useAuth = () => {
       // Отправляем запрос - токен автоматически сохранится в cookie
       const result = await $fetch('/api/auth/telegram', {
         method: 'POST',
-        body: telegramData
+        body: telegramData,
+        credentials: 'include'
       })
       
       console.log('📦 Auth response:', result)
