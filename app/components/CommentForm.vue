@@ -39,7 +39,7 @@
       <p class="text-body-1 text-grey mt-2">Авторизуйтесь через Telegram, чтобы оставить комментарий</p>
       <v-btn
         to="/login"
-        color="primary-darken-2"
+        color="primary"
         variant="elevated"
         prepend-icon="mdi-login"
         class="mt-2"
@@ -100,7 +100,7 @@ const submitComment = async () => {
 }
 
 .comment-form__card {
-  border: 1px solid #e2e8f0 !important;
+  border: 1px solid var(--color-border) !important;
 }
 
 .comment-form__textarea :deep(.v-field) {
@@ -113,8 +113,8 @@ const submitComment = async () => {
 
 .comment-form__prompt {
   margin-top: 16px;
-  border: 1px solid #e2e8f0 !important;
-  background: #f8fafc !important;
+  border: 1px solid var(--color-border) !important;
+  background: var(--color-bg-elevated) !important;
 }
 
 .comment-form__prompt .v-card-text {

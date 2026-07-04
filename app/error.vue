@@ -17,16 +17,16 @@
                   class="error-page__icon"
                 />
 
-                <h1 class="text-h4 font-weight-bold text-grey-darken-3 mt-2">
+                <h1 class="text-h4 font-weight-bold mt-2">
                   {{ title }}
                 </h1>
 
-                <p class="text-body-1 text-grey mt-2">
+                <p class="text-body-1 text-medium-emphasis mt-2">
                   {{ description }}
                 </p>
 
                 <v-btn
-                  color="primary-darken-2"
+                  color="primary"
                   variant="elevated"
                   prepend-icon="mdi-arrow-left"
                   size="large"
@@ -80,7 +80,7 @@ const goHome = () => clearError({ redirect: '/' })
   min-height: 100vh;
   display: flex;
   align-items: center;
-  background: linear-gradient(135deg, #f8fafc 0%, #e2e8f0 100%);
+  background: linear-gradient(135deg, var(--color-bg) 0%, var(--color-bg-elevated) 100%);
 }
 
 .error-page__row {
@@ -88,8 +88,7 @@ const goHome = () => clearError({ redirect: '/' })
 }
 
 .error-page__card {
-  background: #ffffff !important;
-  border: 1px solid #e2e8f0;
+  border: 1px solid var(--color-border);
 }
 
 .error-page__code {
@@ -97,7 +96,7 @@ const goHome = () => clearError({ redirect: '/' })
   font-weight: 800;
   line-height: 1;
   letter-spacing: -0.04em;
-  background: linear-gradient(135deg, #64748b 0%, #94a3b8 100%);
+  background: linear-gradient(135deg, var(--color-accent) 0%, var(--color-accent-dark) 100%);
   -webkit-background-clip: text;
   background-clip: text;
   color: transparent;

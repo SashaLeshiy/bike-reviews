@@ -15,12 +15,12 @@
     </div>
     
     <v-card-text class="bike-card__content">
-      <h3 class="bike-card__title text-body-1 font-weight-bold text-grey-darken-3">
+      <h3 class="bike-card__title text-body-1 font-weight-bold">
         {{ bike.name }}
       </h3>
       
       <div class="bike-card__footer d-flex align-center justify-space-between mt-2">
-        <span class="d-flex align-center ga-1 text-grey-darken-1 text-caption">
+        <span class="d-flex align-center ga-1 text-medium-emphasis text-caption">
           <v-icon icon="mdi-message-text" size="16" />
           {{ bike.commentsCount || 0 }}
         </span>
@@ -44,7 +44,7 @@ const goTo = (path) => {
 
 <style scoped>
 .bike-card {
-  border: 1px solid #e2e8f0;
+  border: 1px solid var(--color-border);
   border-radius: 16px !important;
   overflow: hidden;
   transition: all 0.3s ease;
@@ -52,11 +52,13 @@ const goTo = (path) => {
   height: 100%;
   display: flex;
   flex-direction: column;
+  background: var(--color-surface) !important;
 }
 
 .bike-card:hover {
   transform: translateY(-4px);
-  box-shadow: 0 12px 40px rgba(0, 0, 0, 0.1);
+  box-shadow: 0 12px 40px rgba(0, 0, 0, 0.45);
+  border-color: var(--color-border-dashed);
 }
 
 .bike-card__image-wrapper {
@@ -64,7 +66,7 @@ const goTo = (path) => {
   width: 100%;
   padding-bottom: 75%; /* 4:3 Aspect Ratio */
   overflow: hidden;
-  background: #f1f5f9;
+  background: var(--color-image-placeholder);
   flex-shrink: 0;
 }
 
@@ -109,7 +111,7 @@ const goTo = (path) => {
 
 .bike-card__footer {
   padding-top: 8px;
-  border-top: 1px solid #e2e8f0;
+  border-top: 1px solid var(--color-border);
 }
 
 @media (max-width: 768px) {

@@ -39,7 +39,7 @@
         <!-- Информация справа -->
         <v-col cols="12" md="6" class="mt-4 mt-md-0">
           <div class="bike-detail__header">
-            <h1 class="text-h3 font-weight-bold text-grey-darken-3">{{ bike.name }}</h1>
+            <h1 class="text-h3 font-weight-bold">{{ bike.name }}</h1>
             <v-chip color="primary" variant="tonal" size="large" class="mt-2">
               <v-icon icon="mdi-message-text" size="18" class="mr-1" />
               {{ bike.commentsCount || 0 }} комментариев
@@ -50,7 +50,7 @@
             <v-list>
               <v-list-item>
                 <template v-slot:prepend>
-                  <v-icon icon="mdi-link" color="grey-darken-1" />
+                  <v-icon icon="mdi-link" color="grey" />
                 </template>
                 <v-list-item-title>
                   <a
@@ -81,8 +81,8 @@
     
     <v-row v-else class="bike-detail__not-found" justify="center" align="center">
       <v-col cols="auto" class="text-center">
-        <v-icon icon="mdi-alert-circle" size="64" color="grey-lighten-2" />
-        <h2 class="text-h5 text-grey-darken-3 mt-4">Мотоцикл не найден</h2>
+        <v-icon icon="mdi-alert-circle" size="64" color="grey" />
+        <h2 class="text-h5 mt-4">Мотоцикл не найден</h2>
         <p class="text-body-1 text-grey mt-1">Возможно, он был удален или перемещен</p>
         <v-btn
           to="/"
@@ -151,7 +151,7 @@ onMounted(() => {
 }
 
 .bike-detail__image {
-  border: 1px solid #e2e8f0;
+  border: 1px solid var(--color-border);
   overflow: hidden;
 }
 
@@ -160,7 +160,7 @@ onMounted(() => {
 }
 
 .bike-detail__details .v-list-item {
-  border-bottom: 1px solid #e2e8f0;
+  border-bottom: 1px solid var(--color-border);
 }
 
 .bike-detail__details .v-list-item:last-child {

@@ -5,8 +5,8 @@
         <v-card class="login-page__card" elevation="12" rounded="lg">
           <v-card-text class="pa-6">
             <div class="text-center mb-6">
-              <h1 class="text-h4 font-weight-bold text-grey-darken-3">Добро пожаловать</h1>
-              <p class="text-body-1 text-grey mt-1">Войдите через Telegram, чтобы оставлять комментарии</p>
+              <h1 class="text-h4 font-weight-bold">Добро пожаловать</h1>
+              <p class="text-body-1 text-medium-emphasis mt-1">Войдите через Telegram, чтобы оставлять комментарии</p>
             </div>
             
             <div class="d-flex justify-center pa-4">
@@ -14,7 +14,7 @@
             </div>
             
             <v-divider class="my-4">
-              <v-chip color="grey-lighten-2" text-color="grey-darken-2" size="small">
+              <v-chip variant="outlined" size="small">
                 или
               </v-chip>
             </v-divider>
@@ -35,7 +35,7 @@
             
             <v-divider class="my-4" />
             
-            <v-list class="login-page__info" bg-color="grey-lighten-4" rounded="lg">
+            <v-list class="login-page__info" bg-color="surface-variant" rounded="lg">
               <v-list-item prepend-icon="mdi-shield-check" color="primary">
                 <v-list-item-title>Безопасная авторизация</v-list-item-title>
               </v-list-item>
@@ -109,7 +109,7 @@ const testLogin = async () => {
   min-height: calc(100vh - 64px);
   display: flex;
   align-items: center;
-  background: linear-gradient(135deg, #f8fafc 0%, #e2e8f0 100%);
+  background: linear-gradient(135deg, var(--color-bg) 0%, var(--color-bg-elevated) 100%);
 }
 
 .login-page__row {
@@ -117,16 +117,15 @@ const testLogin = async () => {
 }
 
 .login-page__card {
-  background: #ffffff !important;
-  border: 1px solid #e2e8f0;
+  border: 1px solid var(--color-border);
 }
 
 .login-page__info {
-  border: 1px solid #e2e8f0;
+  border: 1px solid var(--color-border);
 }
 
 .login-page__info .v-list-item {
-  border-bottom: 1px solid #e2e8f0;
+  border-bottom: 1px solid var(--color-border);
 }
 
 .login-page__info .v-list-item:last-child {

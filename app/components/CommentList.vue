@@ -1,8 +1,8 @@
 <template>
   <div class="comment-list">
     <div class="d-flex align-center ga-2 mb-4">
-      <h3 class="text-h6 font-weight-bold text-grey-darken-3">Комментарии</h3>
-      <v-chip color="grey-lighten-2" text-color="grey-darken-2" size="small">
+      <h3 class="text-h6 font-weight-bold">Комментарии</h3>
+      <v-chip variant="outlined" size="small">
         {{ comments.length }}
       </v-chip>
     </div>
@@ -32,7 +32,7 @@
         </template>
         
         <v-list-item-title class="comment-list__title">
-          <span class="font-weight-medium text-grey-darken-3">
+          <span class="font-weight-medium">
             {{ comment.user?.firstName || 'Пользователь' }}
           </span>
           <span v-if="comment.user?.username" class="text-caption text-grey ml-1">
@@ -43,7 +43,7 @@
           </span>
         </v-list-item-title>
         
-        <v-list-item-subtitle class="comment-list__text text-body-2 text-grey-darken-1">
+        <v-list-item-subtitle class="comment-list__text text-body-2 text-medium-emphasis">
           {{ comment.content }}
         </v-list-item-subtitle>
       </v-list-item>
@@ -116,19 +116,19 @@ defineExpose({
   align-items: center;
   justify-content: center;
   padding: 40px 20px;
-  background: #f8fafc;
+  background: var(--color-bg-elevated);
   border-radius: 12px;
-  border: 1px dashed #cbd5e1;
+  border: 1px dashed var(--color-border-dashed);
 }
 
 .comment-list__items {
-  border: 1px solid #e2e8f0;
+  border: 1px solid var(--color-border);
   border-radius: 12px;
   overflow: hidden;
 }
 
 .comment-list__item {
-  border-bottom: 1px solid #e2e8f0;
+  border-bottom: 1px solid var(--color-border);
   padding: 12px 16px !important;
 }
 
@@ -137,7 +137,7 @@ defineExpose({
 }
 
 .comment-list__item:hover {
-  background: #f8fafc;
+  background: var(--color-surface-hover);
 }
 
 .comment-list__title {

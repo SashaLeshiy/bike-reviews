@@ -5,8 +5,8 @@
         <v-card class="home-page__header" flat>
           <v-card-title class="d-flex align-center justify-space-between flex-wrap ga-4">
             <div class="d-flex align-center ga-2">
-              <span class="text-h4 font-weight-bold">Мотоциклы</span>
-              <v-chip size="small" color="grey-lighten-2" text-color="grey-darken-2">
+              <span class="text-h4 font-weight-bold">MOTO REVIEWS</span>
+              <v-chip size="small" variant="outlined">
                 {{ bikes.length }} шт.
               </v-chip>
             </div>
@@ -32,7 +32,7 @@
                 </v-menu>
               </template>
               
-              <v-btn v-else to="/login" color="primary-darken-2" prepend-icon="mdi-login" variant="elevated">
+              <v-btn v-else to="/login" color="primary" prepend-icon="mdi-login" variant="elevated">
                 Войти
               </v-btn>
             </div>
@@ -50,8 +50,8 @@
     
     <v-row v-else-if="bikes.length === 0" class="home-page__empty" justify="center" align="center">
       <v-col cols="auto" class="text-center">
-        <v-icon icon="mdi-motorbike-off" size="64" color="grey-lighten-2" />
-        <p class="text-h6 text-grey-darken-2 mt-4">Мотоциклы не найдены</p>
+        <v-icon icon="mdi-motorbike-off" size="64" color="grey" />
+        <p class="text-h6 text-medium-emphasis mt-4">Мотоциклы не найдены</p>
       </v-col>
     </v-row>
     
@@ -110,9 +110,10 @@ onMounted(() => {
 
 .home-page__header {
   padding: 16px 0;
-  border-bottom: 1px solid #e2e8f0;
+  border-bottom: 1px solid var(--color-border);
   border-radius: 0 !important;
   box-shadow: none !important;
+  background: transparent !important;
 }
 
 .home-page__user-btn {
@@ -120,11 +121,11 @@ onMounted(() => {
   font-weight: 500;
   padding: 4px 12px;
   border-radius: 50px !important;
-  border: 1px solid #e2e8f0 !important;
+  border: 1px solid var(--color-border) !important;
 }
 
 .home-page__user-btn:hover {
-  background: #f8fafc !important;
+  background: var(--color-surface-hover) !important;
 }
 
 .home-page__loading,

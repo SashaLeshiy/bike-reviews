@@ -36,7 +36,7 @@
                 </v-avatar>
               </template>
               
-              <v-card-title class="text-h5 font-weight-bold text-grey-darken-3">
+              <v-card-title class="text-h5 font-weight-bold">
                 {{ user.firstName }} {{ user.lastName }}
               </v-card-title>
               
@@ -52,60 +52,60 @@
               <v-list class="profile-page__info" bg-color="transparent">
                 <v-list-item>
                   <template v-slot:prepend>
-                    <v-icon icon="mdi-account" color="grey-darken-1" />
+                    <v-icon icon="mdi-account" color="grey" />
                   </template>
                   <v-list-item-title>
-                    <span class="text-grey-darken-1">Имя пользователя:</span>
+                    <span class="text-medium-emphasis">Имя пользователя:</span>
                     <span class="font-weight-medium ml-2">{{ user.firstName }}</span>
                   </v-list-item-title>
                 </v-list-item>
                 
                 <v-list-item>
                   <template v-slot:prepend>
-                    <v-icon icon="mdi-account-details" color="grey-darken-1" />
+                    <v-icon icon="mdi-account-details" color="grey" />
                   </template>
                   <v-list-item-title>
-                    <span class="text-grey-darken-1">Фамилия:</span>
+                    <span class="text-medium-emphasis">Фамилия:</span>
                     <span class="font-weight-medium ml-2">{{ user.lastName || 'Не указана' }}</span>
                   </v-list-item-title>
                 </v-list-item>
                 
                 <v-list-item v-if="user.username">
                   <template v-slot:prepend>
-                    <v-icon icon="mdi-at" color="grey-darken-1" />
+                    <v-icon icon="mdi-at" color="grey" />
                   </template>
                   <v-list-item-title>
-                    <span class="text-grey-darken-1">Telegram:</span>
+                    <span class="text-medium-emphasis">Telegram:</span>
                     <span class="font-weight-medium ml-2">@{{ user.username }}</span>
                   </v-list-item-title>
                 </v-list-item>
                 
                 <v-list-item>
                   <template v-slot:prepend>
-                    <v-icon icon="mdi-identifier" color="grey-darken-1" />
+                    <v-icon icon="mdi-identifier" color="grey" />
                   </template>
                   <v-list-item-title>
-                    <span class="text-grey-darken-1">ID пользователя:</span>
+                    <span class="text-medium-emphasis">ID пользователя:</span>
                     <span class="font-weight-medium ml-2">{{ user.id }}</span>
                   </v-list-item-title>
                 </v-list-item>
                 
                 <v-list-item>
                   <template v-slot:prepend>
-                    <v-icon icon="mdi-calendar" color="grey-darken-1" />
+                    <v-icon icon="mdi-calendar" color="grey" />
                   </template>
                   <v-list-item-title>
-                    <span class="text-grey-darken-1">Дата регистрации:</span>
+                    <span class="text-medium-emphasis">Дата регистрации:</span>
                     <span class="font-weight-medium ml-2">{{ formatDate(user.createdAt) }}</span>
                   </v-list-item-title>
                 </v-list-item>
                 
                 <v-list-item>
                   <template v-slot:prepend>
-                    <v-icon icon="mdi-clock" color="grey-darken-1" />
+                    <v-icon icon="mdi-clock" color="grey" />
                   </template>
                   <v-list-item-title>
-                    <span class="text-grey-darken-1">Последний вход:</span>
+                    <span class="text-medium-emphasis">Последний вход:</span>
                     <span class="font-weight-medium ml-2">{{ formatDate(user.lastLogin) }}</span>
                   </v-list-item-title>
                 </v-list-item>
@@ -169,8 +169,8 @@
     
     <v-row v-else class="profile-page__not-found" justify="center" align="center">
       <v-col cols="auto" class="text-center">
-        <v-icon icon="mdi-account-off" size="64" color="grey-lighten-2" />
-        <h2 class="text-h5 text-grey-darken-3 mt-4">Пользователь не найден</h2>
+        <v-icon icon="mdi-account-off" size="64" color="grey" />
+        <h2 class="text-h5 mt-4">Пользователь не найден</h2>
         <p class="text-body-1 text-grey mt-1">Возможно, вы не авторизованы</p>
         <v-btn
           to="/login"
@@ -269,7 +269,7 @@ onMounted(() => {
 }
 
 .profile-page__card {
-  border: 1px solid #e2e8f0;
+  border: 1px solid var(--color-border);
   overflow: hidden;
 }
 
@@ -278,7 +278,7 @@ onMounted(() => {
 }
 
 .profile-page__info .v-list-item {
-  border-bottom: 1px solid #e2e8f0;
+  border-bottom: 1px solid var(--color-border);
 }
 
 .profile-page__info .v-list-item:last-child {
@@ -286,7 +286,7 @@ onMounted(() => {
 }
 
 .profile-page__stats {
-  border: 1px solid #e2e8f0 !important;
+  border: 1px solid var(--color-border) !important;
 }
 
 .profile-page__not-found {
