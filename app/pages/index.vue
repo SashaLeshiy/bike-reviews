@@ -74,6 +74,8 @@
 import { useAuth } from '~/composables/useAuth'
 
 const { isAuthenticated, user, logout } = useAuth()
+console.log('user', user.value)
+console.log('isAuthenticated', isAuthenticated.value)
 const bikes = ref([])
 const loading = ref(true)
 

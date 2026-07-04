@@ -13,7 +13,7 @@
               <TelegramLogin />
             </div>
             
-            <v-divider class="my-4">
+            <!-- <v-divider class="my-4">
               <v-chip variant="outlined" size="small">
                 или
               </v-chip>
@@ -31,7 +31,7 @@
               >
                 Тестовый вход (только для разработки)
               </v-btn>
-            </div>
+            </div> -->
             
             <v-divider class="my-4" />
             
