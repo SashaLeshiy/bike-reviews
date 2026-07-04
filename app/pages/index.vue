@@ -5,7 +5,7 @@
         <v-card class="home-page__header" flat>
           <v-card-title class="d-flex align-center justify-space-between flex-wrap ga-4">
             <div class="d-flex align-center ga-2">
-              <span class="text-h4 font-weight-bold">MOTO REVIEWS</span>
+              <span class="text-h4 font-weight-bold">BIKES REVIEWS</span>
               <v-chip size="small" variant="outlined">
                 {{ bikes.length }} шт.
               </v-chip>
