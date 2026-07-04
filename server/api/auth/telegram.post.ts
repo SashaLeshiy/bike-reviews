@@ -1,7 +1,7 @@
 import jwt from 'jsonwebtoken'
 import crypto from 'crypto'
 import User from '~~/server/models/User'
-import { parseCookies } from 'h3' // ✅ Добавляем импорт
+import { setCookie, getResponseHeader } from 'h3'
 
 export default defineEventHandler(async (event) => {
   if (event.method !== 'POST') {
@@ -110,23 +110,14 @@ export default defineEventHandler(async (event) => {
       sameSite: 'lax',
       maxAge: 60 * 60 * 24 * 7,
       path: '/',
-      domain: config.cookieDomain || undefined // Не указываем domain для localhost
     }
     
     console.log('🍪 Setting cookie with options:', cookieOptions)
     
     setCookie(event, 'auth_token', token, cookieOptions)
 
-    // ✅ Проверяем заголовки ответа
-    const headers = getHeaders(event)
-    console.log('📋 Response headers:', Object.keys(headers))
-    
-    // ✅ Проверяем, есть ли Set-Cookie в заголовках
     const setCookieHeader = getResponseHeader(event, 'set-cookie')
-    console.log('🍪 Set-Cookie header:', setCookieHeader)
-
-    // ✅ НЕ ПАРСИМ ВХОДЯЩИЕ COOKIE (они пустые, это нормально)
-    // const cookies = parseCookies(event) // ❌ Убираем эту проверку
+    console.log('✅ Set-Cookie header:', setCookieHeader)
 
     return {
       success: true,
