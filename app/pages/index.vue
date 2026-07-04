@@ -51,7 +51,7 @@
     <v-row v-else-if="bikes.length === 0" class="home-page__empty" justify="center" align="center">
       <v-col cols="auto" class="text-center">
         <v-icon icon="mdi-motorbike-off" size="64" color="grey" />
-        <p class="text-h6 text-medium-emphasis mt-4">Байки не найдены</p>
+        <p class="text-h6 text-medium-emphasis mt-4">Мотоциклы не найдены</p>
       </v-col>
     </v-row>
     
