@@ -61,8 +61,6 @@ const handleTelegramAuth = async (user: any) => {
   error.value = null
   
   try {
-    console.log('📱 Telegram login widget response:', user)
-    
     const result = await loginWithTelegram(user)
     
     if (result.success) {
@@ -99,7 +97,6 @@ const initTelegramWidget = () => {
     }
 
     if (container.hasChildNodes()) {
-      console.log('Telegram widget already loaded')
       isLoading.value = false
       return
     }
@@ -117,7 +114,6 @@ const initTelegramWidget = () => {
     
     container.appendChild(script)
     
-    console.log('✅ Telegram widget initialized')
     isWidgetSupported.value = true
     isLoading.value = false
     

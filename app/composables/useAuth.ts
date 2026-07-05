@@ -5,9 +5,7 @@ export const useAuth = () => {
 
   const loginWithTelegram = async (telegramData: any) => {
     loading.value = true
-    console.log('telegram data', telegramData)
     try {
-      console.log('🔐 Attempting login with Telegram...')
       
       // Отправляем запрос - токен автоматически сохранится в cookie
       const result = await $fetch('/api/auth/telegram', {
@@ -16,15 +14,12 @@ export const useAuth = () => {
         credentials: 'include'
       })
       
-      console.log('📦 Auth response:', result)
-      
       if (result.success) {
         user.value = result.user
         if (process.client) {
           localStorage.setItem('user_data', JSON.stringify(result.user))
         }
         
-        console.log(`✅ Logged in as: ${result.user.firstName}`)
         return { success: true }
       } else {
         console.error('❌ Auth failed:', result.error)
@@ -50,8 +45,6 @@ export const useAuth = () => {
       if (process.client) {
         localStorage.removeItem('user_data')
       }
-      
-      console.log('👋 Logged out')
       
       navigateTo('/')
     } catch (error) {
