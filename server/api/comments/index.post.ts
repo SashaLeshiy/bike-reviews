@@ -72,7 +72,7 @@ export default defineEventHandler(async (event) => {
 
     // 4. Создаем комментарий
     const comment = new Comment({
-      bikeId: parseInt(bikeId),
+      bikeId: bikeId,
       userId: decoded.userId,
       user: {
         username: decoded.username || '',
@@ -86,7 +86,7 @@ export default defineEventHandler(async (event) => {
 
     // 5. Обновляем счетчик комментариев
     await Bike.findOneAndUpdate(
-      { id: parseInt(bikeId) },
+      { id: bikeId },
       { $inc: { commentsCount: 1 } }
     )
 

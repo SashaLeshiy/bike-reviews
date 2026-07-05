@@ -53,7 +53,7 @@
 <script setup>
 const props = defineProps({
   bikeId: {
-    type: Number,
+    type: [Number, String],
     required: true
   }
 })

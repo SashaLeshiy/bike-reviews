@@ -5,7 +5,7 @@ export default defineEventHandler(async (event) => {
   console.log(`📡 API /api/bikes/bikes/${id} called`)
   
   try {
-    const bike = await Bike.findOne({ id: parseInt(id) })
+    const bike = await Bike.findOne({ id: id })
     
     if (!bike) {
       return {

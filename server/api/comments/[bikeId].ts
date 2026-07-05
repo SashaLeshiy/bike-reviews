@@ -6,7 +6,7 @@ export default defineEventHandler(async (event) => {
   if (event.method === 'GET') {
     try {
       const comments = await Comment.find({ 
-        bikeId: parseInt(bikeId) 
+        bikeId: bikeId 
       })
       .sort({ createdAt: -1 })
       .lean()
