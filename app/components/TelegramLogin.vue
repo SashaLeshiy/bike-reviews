@@ -1,10 +1,10 @@
 <template>
   <div class="telegram-login">
     <!-- Виджет (если поддерживается) -->
-    <div v-if="isWidgetSupported" id="telegram-login-container" class="telegram-login__widget"></div>
+    <!-- <div v-if="isWidgetSupported" id="telegram-login-container" class="telegram-login__widget"></div> -->
     
     <!-- Кнопка входа через бота -->
-    <div v-else class="telegram-login__bot">
+    <div class="telegram-login__bot">
       <v-btn
         color="primary"
         size="large"
