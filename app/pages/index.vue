@@ -5,7 +5,7 @@
         <v-card class="home-page__header" flat>
           <v-card-title class="d-flex align-center justify-space-between flex-wrap ga-4">
             <div class="d-flex align-center ga-2">
-              <span class="text-h4 font-weight-bold">BIKES REVIEWS</span>
+              <span class="text-h4 font-weight-bold">MOTO REVIEWS</span>
               <v-chip size="small" variant="outlined">
                 {{ bikes.length }} шт.
               </v-chip>
@@ -74,8 +74,6 @@
 import { useAuth } from '~/composables/useAuth'
 
 const { isAuthenticated, user, logout } = useAuth()
-console.log('user', user.value)
-console.log('isAuthenticated', isAuthenticated.value)
 const bikes = ref([])
 const loading = ref(true)
 

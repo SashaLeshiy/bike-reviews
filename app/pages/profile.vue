@@ -89,26 +89,6 @@
                     <span class="font-weight-medium ml-2">{{ user.id }}</span>
                   </v-list-item-title>
                 </v-list-item>
-                
-                <v-list-item>
-                  <template v-slot:prepend>
-                    <v-icon icon="mdi-calendar" color="grey" />
-                  </template>
-                  <v-list-item-title>
-                    <span class="text-medium-emphasis">Дата регистрации:</span>
-                    <span class="font-weight-medium ml-2">{{ formatDate(user.createdAt) }}</span>
-                  </v-list-item-title>
-                </v-list-item>
-                
-                <v-list-item>
-                  <template v-slot:prepend>
-                    <v-icon icon="mdi-clock" color="grey" />
-                  </template>
-                  <v-list-item-title>
-                    <span class="text-medium-emphasis">Последний вход:</span>
-                    <span class="font-weight-medium ml-2">{{ formatDate(user.lastLogin) }}</span>
-                  </v-list-item-title>
-                </v-list-item>
               </v-list>
             </v-card-text>
             
@@ -235,17 +215,6 @@ const handleLogout = async () => {
 const editProfile = () => {
   // Показываем сообщение, что функция в разработке
   alert('Функция редактирования профиля будет доступна в ближайшее время')
-}
-
-const formatDate = (date) => {
-  if (!date) return '—'
-  return new Date(date).toLocaleString('ru-RU', {
-    day: '2-digit',
-    month: '2-digit',
-    year: 'numeric',
-    hour: '2-digit',
-    minute: '2-digit'
-  })
 }
 
 const getInitials = (name) => {

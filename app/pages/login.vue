@@ -13,26 +13,6 @@
               <TelegramLogin />
             </div>
             
-            <v-divider class="my-4">
-              <v-chip variant="outlined" size="small">
-                или
-              </v-chip>
-            </v-divider>
-            
-            <div v-if="isDev" class="mt-2">
-              <v-btn
-                @click="testLogin"
-                color="grey"
-                variant="tonal"
-                block
-                :loading="loading"
-                prepend-icon="mdi-flask"
-                size="large"
-              >
-                Тестовый вход (только для разработки)
-              </v-btn>
-            </div>
-            
             <v-divider class="my-4" />
             
             <v-list class="login-page__info" bg-color="surface-variant" rounded="lg">
