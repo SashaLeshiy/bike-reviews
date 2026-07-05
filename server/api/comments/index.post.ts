@@ -1,7 +1,20 @@
 import jwt from 'jsonwebtoken'
+import sanitizeHtml from 'sanitize-html'
 import Comment from '~~/server/models/Comment'
 import Bike from '~~/server/models/Bike'
 import { parseCookies } from 'h3'
+
+const sanitizeOptions = {
+  allowedTags: [], // Запрещаем все теги
+  allowedAttributes: {}, // Запрещаем все атрибуты
+  disallowedTagsMode: 'escape', // Экранируем теги вместо удаления
+  textFilter: (text: string) => {
+    // Дополнительная очистка текста
+    return text
+      .replace(/javascript:/gi, '')
+      .replace(/on\w+\s*=/gi, '')
+  }
+}
 
 export default defineEventHandler(async (event) => {
   // Разрешаем только POST
@@ -41,10 +54,19 @@ export default defineEventHandler(async (event) => {
     const body = await readBody(event)
     const { bikeId, content } = body
 
-    if (!content || content.trim().length === 0) {
+    const sanitizedContent = sanitizeHtml(content.trim(), sanitizeOptions)
+
+    if (!sanitizedContent || sanitizedContent.length < 3) {
       return {
         success: false,
         error: 'Comment content is required'
+      }
+    }
+
+    if (sanitizedContent.length > 1000) {
+      return { 
+        success: false, 
+        error: 'Comment is too long (max 1000 characters)' 
       }
     }
 
@@ -57,7 +79,7 @@ export default defineEventHandler(async (event) => {
         firstName: decoded.firstName || '',
         lastName: decoded.lastName || ''
       },
-      content: content.trim()
+      content: sanitizedContent
     })
 
     await comment.save()
