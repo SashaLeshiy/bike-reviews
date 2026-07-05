@@ -73,7 +73,7 @@ const submitComment = async () => {
     const result = await $fetch('/api/comments', {
       method: 'POST',
       body: {
-        bikeId: props.bikeId,
+        bikeId: props.bikeId.toString(),
         content: content.value.trim()
       },
       credentials: 'include'
