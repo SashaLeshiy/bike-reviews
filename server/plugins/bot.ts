@@ -1,8 +1,7 @@
 import { startTelegramBot } from '~~/server/api/auth/telegram/bot'
 
-export default defineNitroPlugin(() => {
-  // Запускаем бота только если он не отключен через переменную окружения
+export default defineNitroPlugin(async () => {
   if (process.env.DISABLE_TELEGRAM_BOT !== 'true') {
-    startTelegramBot()
+    await startTelegramBot()
   }
 })

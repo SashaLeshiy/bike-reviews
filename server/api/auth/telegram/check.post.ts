@@ -1,5 +1,6 @@
 import jwt from 'jsonwebtoken'
 import User from '~~/server/models/User'
+import { deleteAuthCode, getAuthCodeData } from '~~/server/utils/telegramAuth'
 import { getRedisClient } from '~~/server/utils/redis'
 
 export default defineEventHandler(async (event) => {
@@ -15,25 +16,18 @@ export default defineEventHandler(async (event) => {
       return { success: false, error: 'Code is required' }
     }
 
-    // Получаем Redis клиент
-    const redis = await getRedisClient()
-    const key = `telegram:auth:${code}`
-    
-    // Получаем данные из Redis
-    const authDataRaw = await redis.get(key)
-    
-    if (!authDataRaw) {
-      return { success: false, error: 'Invalid or expired code' }
+    const authEntry = await getAuthCodeData(code)
+
+    if (!authEntry) {
+      return { success: false, pending: true }
     }
 
-    const authData = JSON.parse(authDataRaw)
+    const { key, data: authData } = authEntry
 
-    // Проверяем TTL (Redis автоматически удалит просроченные ключи)
-    // Дополнительная проверка на всякий случай
+    const redis = await getRedisClient()
     const ttl = await redis.ttl(key)
     if (ttl < 0) {
-      // Ключ уже удален или не имеет TTL
-      await redis.del(key)
+      await deleteAuthCode(code)
       return { success: false, error: 'Code expired' }
     }
 
@@ -59,8 +53,7 @@ export default defineEventHandler(async (event) => {
       await user.save()
     }
 
-    // Удаляем использованный код из Redis
-    await redis.del(key)
+    await deleteAuthCode(code)
 
     // Создаем JWT токен
     const config = useRuntimeConfig()
@@ -102,27 +95,3 @@ export default defineEventHandler(async (event) => {
     }
   }
 })
-
-// ✅ Функция для добавления кода (вызывается из polling бота)
-export const addAuthCode = async (code: string, telegramId: string, userData: any) => {
-  try {
-    const redis = await getRedisClient()
-    const key = `telegram:auth:${code}`
-    
-    const data = {
-      telegramId,
-      firstName: userData.first_name || '',
-      lastName: userData.last_name || '',
-      username: userData.username || '',
-      photoUrl: userData.photo_url || ''
-    }
-    
-    // Сохраняем в Redis с TTL 120 секунд
-    await redis.setEx(key, 120, JSON.stringify(data))
-    
-    console.log(`✅ Auth code saved to Redis: ${code}`)
-  } catch (error) {
-    console.error('❌ Failed to save auth code to Redis:', error)
-    throw error
-  }
-}

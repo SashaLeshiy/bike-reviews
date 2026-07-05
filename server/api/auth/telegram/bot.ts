@@ -1,11 +1,11 @@
 import TelegramBot from 'node-telegram-bot-api'
-import { addAuthCode } from './check.post'
-import { isRedisAvailable } from '~~/server/utils/redis'
+import { addAuthCode } from '~~/server/utils/telegramAuth'
+import { getRedisClient } from '~~/server/utils/redis'
 
 let bot: TelegramBot | null = null
 let isPollingStarted = false
 
-export const startTelegramBot = () => {
+export const startTelegramBot = async () => {
   if (isPollingStarted) {
     console.log('🤖 Bot polling already started')
     return
@@ -18,10 +18,11 @@ export const startTelegramBot = () => {
     console.error('❌ TELEGRAM_BOT_TOKEN is not set in .env')
     return
   }
-  
-  // Проверяем, доступен ли Redis
-  if (!isRedisAvailable()) {
-    console.warn('⚠️ Redis is not available, bot will not start')
+
+  try {
+    await getRedisClient()
+  } catch (error) {
+    console.error('❌ Redis is not available, bot will not start:', error)
     return
   }
   
