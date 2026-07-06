@@ -7,7 +7,7 @@
             <div class="d-flex align-center ga-2">
               <span class="text-h4 font-weight-bold">MOTO REVIEWS</span>
               <v-chip size="small" variant="outlined">
-                {{ bikes.length }} шт.
+                {{ searchQuery ? `${filteredBikes.length} из ${bikes.length}` : `${bikes.length}` }} шт.
               </v-chip>
             </div>
             
@@ -17,7 +17,7 @@
                   <template v-slot:activator="{ props }">
                     <v-btn v-bind="props" variant="text" class="home-page__user-btn">
                       <v-avatar size="32" class="mr-2">
-                        <!-- <v-img v-if="user.photoUrl" :src="user.photoUrl" :alt="user.firstName" /> -->
+                        <v-img v-if="user.photoUrl" :src="user.photoUrl" :alt="user.firstName" />
                         <v-icon icon="mdi-account" />
                       </v-avatar>
                       <span class="text-body-2 font-weight-medium">{{ user.firstName }}</span>
@@ -40,6 +40,21 @@
         </v-card>
       </v-col>
     </v-row>
+
+    <v-row v-if="!loading && bikes.length > 0">
+      <v-col cols="12">
+        <v-text-field
+          v-model="searchQuery"
+          prepend-inner-icon="mdi-magnify"
+          placeholder="Поиск по названию..."
+          variant="outlined"
+          density="comfortable"
+          hide-details
+          clearable
+          class="home-page__search"
+        />
+      </v-col>
+    </v-row>
     
     <v-row v-if="loading" class="home-page__loading" justify="center" align="center">
       <v-col cols="auto" class="text-center">
@@ -54,10 +69,17 @@
         <p class="text-h6 text-medium-emphasis mt-4">Мотоциклы не найдены</p>
       </v-col>
     </v-row>
+
+    <v-row v-else-if="filteredBikes.length === 0" class="home-page__empty" justify="center" align="center">
+      <v-col cols="auto" class="text-center">
+        <v-icon icon="mdi-magnify-close" size="64" color="grey" />
+        <p class="text-h6 text-medium-emphasis mt-4">Ничего не найдено по запросу «{{ searchQuery }}»</p>
+      </v-col>
+    </v-row>
     
     <v-row v-else>
       <v-col
-        v-for="bike in bikes"
+        v-for="bike in filteredBikes"
         :key="bike.id"
         cols="12"
         sm="6"
@@ -76,6 +98,15 @@ import { useAuth } from '~/composables/useAuth'
 const { isAuthenticated, user, logout } = useAuth()
 const bikes = ref([])
 const loading = ref(true)
+const searchQuery = ref('')
+
+const filteredBikes = computed(() => {
+  const query = (searchQuery.value ?? '').trim().toLowerCase()
+  if (!query) return bikes.value
+  return bikes.value.filter((bike) =>
+    bike.name?.toLowerCase().includes(query)
+  )
+})
 
 const fetchBikes = async () => {
   loading.value = true
@@ -114,6 +145,10 @@ onMounted(() => {
   border-radius: 0 !important;
   box-shadow: none !important;
   background: transparent !important;
+}
+
+.home-page__search {
+  max-width: 480px;
 }
 
 .home-page__user-btn {
