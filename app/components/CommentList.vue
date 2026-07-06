@@ -17,7 +17,7 @@
       <p class="text-caption text-grey-lighten-1">Будьте первым, кто оставит комментарий!</p>
     </div>
     
-    <v-list v-else class="comment-list__items" bg-color="transparent" lines="two">
+    <v-list v-else class="comment-list__items" bg-color="transparent">
       <v-list-item
         v-for="comment in comments"
         :key="comment._id"
@@ -78,12 +78,10 @@ const fetchComments = async () => {
 
 const formatDate = (date) => {
   if (!date) return '—'
-  return new Date(date).toLocaleString('ru-RU', {
+  return new Date(date).toLocaleDateString('ru-RU', {
     day: '2-digit',
     month: '2-digit',
-    year: 'numeric',
-    hour: '2-digit',
-    minute: '2-digit'
+    year: 'numeric'
   })
 }
 
@@ -152,6 +150,11 @@ defineExpose({
   line-height: 1.5;
   word-break: break-word;
   padding-right: 8px;
+  white-space: normal;
+  overflow: visible;
+  text-overflow: unset;
+  line-clamp: unset;
+  -webkit-line-clamp: unset;
 }
 
 @media (max-width: 480px) {
