@@ -1,7 +1,9 @@
+import { onMounted } from 'vue'
+
 export const useAuth = () => {
   const user = useState<User | null>('user', () => null)
   const isAuthenticated = computed(() => !!user.value)
-  const loading = useState<boolean>('authLoading', () => true)
+  const loading = useState<boolean>('authLoading', () => false)
 
   const loginWithTelegram = async (telegramData: any) => {
     loading.value = true
@@ -91,7 +93,9 @@ export const useAuth = () => {
   }
 
   const restoreSession = async () => {
-    if (process.client) {
+    loading.value = true
+
+    if (import.meta.client) {
       try {
         const savedUser = localStorage.getItem('user_data')
         if (savedUser) {
@@ -101,12 +105,14 @@ export const useAuth = () => {
         console.error('Failed to restore session:', error)
       }
     }
-    
+
     await fetchCurrentUser()
   }
 
-  if (process.client) {
-    restoreSession()
+  if (import.meta.client) {
+    onMounted(() => {
+      restoreSession()
+    })
   }
 
   return {
