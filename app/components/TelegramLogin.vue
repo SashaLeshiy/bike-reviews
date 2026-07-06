@@ -22,10 +22,6 @@
         </v-btn>
       </a>
 
-      <p class="text-caption text-grey mt-2 text-center">
-        Нажмите «Start» в боте для авторизации
-      </p>
-
       <p v-if="authStatus === 'waiting'" class="text-caption text-primary mt-2 text-center">
         Ожидаем подтверждения в Telegram...
       </p>

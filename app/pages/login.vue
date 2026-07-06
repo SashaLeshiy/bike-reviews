@@ -12,6 +12,18 @@
             <div class="d-flex justify-center pa-4">
               <TelegramLogin />
             </div>
+
+            <div v-if="isDev" class="d-flex justify-center mt-2">
+              <v-btn
+                color="secondary"
+                variant="outlined"
+                prepend-icon="mdi-test-tube"
+                :loading="loading"
+                @click="testLogin"
+              >
+                Войти как тестовый пользователь
+              </v-btn>
+            </div>
             
             <v-divider class="my-4" />
             
@@ -53,7 +65,7 @@ const { loginWithTelegram } = useAuth()
 const router = useRouter()
 const loading = ref(false)
 
-const isDev = process.env.NODE_ENV === 'development'
+const isDev = import.meta.dev
 
 const testLogin = async () => {
   loading.value = true
