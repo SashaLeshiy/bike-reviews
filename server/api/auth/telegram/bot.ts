@@ -61,19 +61,9 @@ export const startTelegramBot = async () => {
           photo_url: user.photo_url || ''
         })
         
-        const siteUrl = config.public?.siteUrl || 'https://your-domain.com'
-        
-        bot?.sendMessage(chatId, 
-          '✅ Успешная авторизация!\n\n' +
-          'Вернитесь на сайт, авторизация произойдет автоматически.',
-          {
-            reply_markup: {
-              inline_keyboard: [[{
-                text: '🚀 Перейти на сайт',
-                url: `${siteUrl}?auth=success`
-              }]]
-            }
-          }
+        bot?.sendMessage(chatId,
+          '✅ Вы авторизованы!\n\n' +
+          'Вернитесь на сайт — вход произойдёт автоматически.'
         )
       } catch (error) {
         console.error('❌ Error saving auth code:', error)
