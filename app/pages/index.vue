@@ -55,6 +55,12 @@
         />
       </v-col>
     </v-row>
+
+    <v-row v-if="!loading && bikes.length > 0">
+      <v-col cols="12">
+        <RecentCommentsCarousel />
+      </v-col>
+    </v-row>
     
     <v-row v-if="loading" class="home-page__loading" justify="center" align="center">
       <v-col cols="auto" class="text-center">

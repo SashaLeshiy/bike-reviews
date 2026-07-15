@@ -21,6 +21,7 @@
       <v-list-item
         v-for="comment in comments"
         :key="comment._id"
+        :id="`comment-${comment._id}`"
         class="comment-list__item"
       >
         <template v-slot:prepend>
@@ -52,6 +53,8 @@
 </template>
 
 <script setup>
+const route = useRoute()
+
 const props = defineProps({
   bikeId: {
     type: [Number, String],
@@ -62,12 +65,29 @@ const props = defineProps({
 const comments = ref([])
 const loading = ref(true)
 
+const scrollToCommentHash = () => {
+  if (!import.meta.client || !route.hash) return
+
+  nextTick(() => {
+    const target = document.querySelector(route.hash)
+    if (!target) return
+
+    target.scrollIntoView({ behavior: 'smooth', block: 'center' })
+    target.classList.add('comment-list__item--highlight')
+
+    window.setTimeout(() => {
+      target.classList.remove('comment-list__item--highlight')
+    }, 2000)
+  })
+}
+
 const fetchComments = async () => {
   loading.value = true
   try {
     const result = await $fetch(`/api/comments/${props.bikeId}`)
     if (result.success) {
       comments.value = result.data || []
+      scrollToCommentHash()
     }
   } catch (error) {
     console.error('Failed to fetch comments:', error)
@@ -136,6 +156,20 @@ defineExpose({
 
 .comment-list__item:hover {
   background: var(--color-surface-hover);
+}
+
+.comment-list__item--highlight {
+  background: rgba(219, 244, 12, 0.08);
+  animation: comment-highlight 2s ease;
+}
+
+@keyframes comment-highlight {
+  0% {
+    background: rgba(219, 244, 12, 0.18);
+  }
+  100% {
+    background: rgba(219, 244, 12, 0.08);
+  }
 }
 
 .comment-list__title {

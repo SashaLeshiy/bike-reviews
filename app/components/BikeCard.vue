@@ -2,7 +2,7 @@
   <v-card class="bike-card" @click="goTo(`/bike/${bike.id}`)">
     <div class="bike-card__image-wrapper">
       <v-img
-        :src="bike.image"
+        :src="proxyImageUrl"
         :alt="bike.name"
         class="bike-card__image"
         cover
@@ -10,6 +10,13 @@
       >
         <template v-slot:placeholder>
           <v-skeleton-loader type="image" />
+        </template>
+        
+        <!-- Добавьте обработку ошибок -->
+        <template v-slot:error>
+          <div class="d-flex align-center justify-center fill-height bg-grey-lighten-3">
+            <v-icon icon="mdi-image-off" size="48" color="grey" />
+          </div>
         </template>
       </v-img>
     </div>
@@ -30,11 +37,20 @@
 </template>
 
 <script setup>
-defineProps({
+const props = defineProps({
   bike: {
     type: Object,
     required: true
   }
+})
+
+const proxyImageUrl = computed(() => {
+  if (!props.bike.image) return ''
+  // Проверяем, нужно ли проксировать (если это внешний URL)
+  if (props.bike.image.startsWith('http')) {
+    return `/api/images/proxy-image?url=${encodeURIComponent(props.bike.image)}`
+  }
+  return props.bike.image
 })
 
 const goTo = (path) => {
@@ -64,7 +80,7 @@ const goTo = (path) => {
 .bike-card__image-wrapper {
   position: relative;
   width: 100%;
-  padding-bottom: 75%; /* 4:3 Aspect Ratio */
+  padding-bottom: 75%;
   overflow: hidden;
   background: var(--color-image-placeholder);
   flex-shrink: 0;
@@ -76,13 +92,9 @@ const goTo = (path) => {
   left: 0;
   width: 100%;
   height: 100%;
-  object-fit: cover;
-  transition: transform 0.5s ease;
 }
 
 .bike-card__image :deep(.v-img__img) {
-  width: 100%;
-  height: 100%;
   object-fit: cover;
   transition: transform 0.5s ease;
 }

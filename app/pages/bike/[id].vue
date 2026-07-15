@@ -23,7 +23,7 @@
         <!-- Фото слева -->
         <v-col cols="12" md="6">
           <v-img
-            :src="bike.image"
+            :src="proxyImageUrl"
             :alt="bike.name"
             class="bike-detail__image"
             cover
@@ -32,6 +32,11 @@
           >
             <template v-slot:placeholder>
               <v-skeleton-loader type="image" />
+            </template>
+            <template v-slot:error>
+              <div class="d-flex align-center justify-center fill-height bg-grey-lighten-3">
+                <v-icon icon="mdi-image-off" size="48" color="grey" />
+              </div>
             </template>
           </v-img>
         </v-col>
@@ -103,6 +108,14 @@ const route = useRoute()
 const bike = ref(null)
 const loading = ref(true)
 const commentListRef = ref(null)
+
+const proxyImageUrl = computed(() => {
+  if (!bike.value?.image) return ''
+  if (bike.value.image.startsWith('http')) {
+    return `/api/images/proxy-image?url=${encodeURIComponent(bike.value.image)}`
+  }
+  return bike.value.image
+})
 
 const fetchBike = async () => {
   loading.value = true
