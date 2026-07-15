@@ -137,11 +137,12 @@ onUnmounted(() => {
   scroll-padding: 4px;
   padding: 4px 2px 8px;
   -webkit-overflow-scrolling: touch;
-  scrollbar-width: thin;
+  scrollbar-width: none;
+  -ms-overflow-style: none;
 }
 
 .recent-comments__track::-webkit-scrollbar {
-  height: 6px;
+  display: none;
 }
 
 .recent-comments__track::-webkit-scrollbar-thumb {
