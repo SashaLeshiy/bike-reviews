@@ -43,6 +43,7 @@
         variant="elevated"
         prepend-icon="mdi-login"
         class="mt-2"
+        rounded="xl"
       >
         Войти
       </v-btn>

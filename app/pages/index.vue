@@ -30,7 +30,7 @@
             </v-menu>
           </template>
 
-          <v-btn v-else to="/login" color="primary" prepend-icon="mdi-login" variant="elevated">
+          <v-btn v-else to="/login" color="primary" prepend-icon="mdi-login" variant="elevated" rounded="xl">
             Войти
           </v-btn>
         </div>
