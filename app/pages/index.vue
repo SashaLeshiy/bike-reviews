@@ -1,45 +1,41 @@
 <template>
   <v-container class="home-page">
-    <v-row>
-      <v-col cols="12">
-        <v-card class="home-page__header" flat>
-          <v-card-title class="d-flex align-center justify-space-between flex-wrap ga-4">
-            <div class="d-flex align-center ga-2">
-              <span class="text-h4 font-weight-bold">MOTO REVIEWS</span>
-              <v-chip size="small" variant="outlined">
-                {{ searchQuery ? `${filteredBikes.length} из ${bikes.length}` : `${bikes.length}` }} шт.
-              </v-chip>
-            </div>
-            
-            <div>
-              <template v-if="isAuthenticated && user">
-                <v-menu location="bottom end" transition="scale-transition">
-                  <template v-slot:activator="{ props }">
-                    <v-btn v-bind="props" variant="text" class="home-page__user-btn">
-                      <v-avatar size="32" class="mr-2">
-                        <!-- <v-img v-if="user.photoUrl" :src="user.photoUrl" :alt="user.firstName" /> -->
-                        <v-icon icon="mdi-account" />
-                      </v-avatar>
-                      <span class="text-body-2 font-weight-medium">{{ user.firstName }}</span>
-                      <v-icon icon="mdi-chevron-down" size="18" />
-                    </v-btn>
-                  </template>
-                  <v-list>
-                    <v-list-item prepend-icon="mdi-account" title="Профиль" to="/profile" />
-                    <v-divider />
-                    <v-list-item prepend-icon="mdi-logout" title="Выйти" @click="handleLogout" />
-                  </v-list>
-                </v-menu>
+    <v-card class="home-page__header" flat>
+      <v-card-title class="d-flex align-center justify-space-between flex-wrap ga-4">
+        <div class="d-flex align-center ga-2">
+          <span class="text-h4 font-weight-bold">MOTO REVIEWS</span>
+          <v-chip size="small" variant="outlined">
+            {{ searchQuery ? `${filteredBikes.length} из ${bikes.length}` : `${bikes.length}` }} шт.
+          </v-chip>
+        </div>
+
+        <div>
+          <template v-if="isAuthenticated && user">
+            <v-menu location="bottom end" transition="scale-transition">
+              <template v-slot:activator="{ props }">
+                <v-btn v-bind="props" variant="text" class="home-page__user-btn">
+                  <v-avatar size="32" class="mr-2">
+                    <!-- <v-img v-if="user.photoUrl" :src="user.photoUrl" :alt="user.firstName" /> -->
+                    <v-icon icon="mdi-account" />
+                  </v-avatar>
+                  <span class="text-body-2 font-weight-medium">{{ user.firstName }}</span>
+                  <v-icon icon="mdi-chevron-down" size="18" />
+                </v-btn>
               </template>
-              
-              <v-btn v-else to="/login" color="primary" prepend-icon="mdi-login" variant="elevated">
-                Войти
-              </v-btn>
-            </div>
-          </v-card-title>
-        </v-card>
-      </v-col>
-    </v-row>
+              <v-list>
+                <v-list-item prepend-icon="mdi-account" title="Профиль" to="/profile" />
+                <v-divider />
+                <v-list-item prepend-icon="mdi-logout" title="Выйти" @click="handleLogout" />
+              </v-list>
+            </v-menu>
+          </template>
+
+          <v-btn v-else to="/login" color="primary" prepend-icon="mdi-login" variant="elevated">
+            Войти
+          </v-btn>
+        </div>
+      </v-card-title>
+    </v-card>
 
     <v-row v-if="!loading && bikes.length > 0">
       <v-col cols="12">
@@ -146,11 +142,43 @@ onMounted(() => {
 }
 
 .home-page__header {
-  padding: 16px 0;
-  border-bottom: 1px solid var(--color-border);
-  border-radius: 0 !important;
-  box-shadow: none !important;
-  background: transparent !important;
+  position: sticky;
+  top: 12px;
+  z-index: 20;
+  margin-bottom: 12px;
+  padding: 2px 8px;
+  border: 1px solid rgba(255, 255, 255, 0.09) !important;
+  border-radius: 20px !important;
+  /* Полупрозрачная подложка под стекло (тёмная тема) */
+  background: rgba(24, 27, 35, 0.55) !important;
+  /* Сам эффект «жидкого стекла»: размытие + повышение насыщенности фона */
+  -webkit-backdrop-filter: blur(20px) saturate(180%);
+  backdrop-filter: blur(20px) saturate(180%);
+  box-shadow:
+    0 8px 32px rgba(0, 0, 0, 0.4),
+    inset 0 1px 0 rgba(255, 255, 255, 0.08) !important;
+  transition: background 0.3s ease, box-shadow 0.3s ease, border-color 0.3s ease;
+}
+
+/* Мягкий блик сверху — усиливает ощущение стекла */
+.home-page__header::before {
+  content: '';
+  position: absolute;
+  inset: 0;
+  border-radius: inherit;
+  background: linear-gradient(
+    180deg,
+    rgba(255, 255, 255, 0.06) 0%,
+    rgba(255, 255, 255, 0) 60%
+  );
+  pointer-events: none;
+}
+
+/* Fallback: если браузер не умеет backdrop-filter — делаем фон плотнее */
+@supports not ((backdrop-filter: blur(1px)) or (-webkit-backdrop-filter: blur(1px))) {
+  .home-page__header {
+    background: rgba(24, 27, 35, 0.92) !important;
+  }
 }
 
 .home-page__search {
