@@ -10,18 +10,18 @@ export const useAuth = () => {
     try {
       
       // Отправляем запрос - токен автоматически сохранится в cookie
-      const result = await $fetch('/api/auth/telegram', {
+      const result = await $fetch<AuthResponse>('/api/auth/telegram', {
         method: 'POST',
         body: telegramData,
         credentials: 'include'
       })
-      
-      if (result.success) {
+
+      if (result.success && result.user) {
         user.value = result.user
-        if (process.client) {
+        if (import.meta.client) {
           localStorage.setItem('user_data', JSON.stringify(result.user))
         }
-        
+
         return { success: true }
       } else {
         console.error('❌ Auth failed:', result.error)
@@ -29,7 +29,7 @@ export const useAuth = () => {
       }
     } catch (error) {
       console.error('❌ Login error:', error)
-      return { success: false, error: error.message }
+      return { success: false, error: getErrorMessage(error) }
     } finally {
       loading.value = false
     }
@@ -43,11 +43,11 @@ export const useAuth = () => {
       })
       
       user.value = null
-      
-      if (process.client) {
+
+      if (import.meta.client) {
         localStorage.removeItem('user_data')
       }
-      
+
       navigateTo('/')
     } catch (error) {
       console.error('Logout error:', error)
@@ -58,7 +58,7 @@ export const useAuth = () => {
     loading.value = true
     
     try {
-      if (process.client) {
+      if (import.meta.client) {
         const savedUser = localStorage.getItem('user_data')
         if (savedUser) {
           try {
@@ -69,18 +69,18 @@ export const useAuth = () => {
         }
       }
 
-      const result = await $fetch('/api/auth/me', {
+      const result = await $fetch<AuthResponse>('/api/auth/me', {
         method: 'GET'
       })
-      
-      if (result.success) {
+
+      if (result.success && result.user) {
         user.value = result.user
-        if (process.client) {
+        if (import.meta.client) {
           localStorage.setItem('user_data', JSON.stringify(result.user))
         }
       } else {
         user.value = null
-        if (process.client) {
+        if (import.meta.client) {
           localStorage.removeItem('user_data')
         }
       }
@@ -110,7 +110,10 @@ export const useAuth = () => {
   }
 
   if (import.meta.client) {
+    const initialized = useState<boolean>('authInitialized', () => false)
     onMounted(() => {
+      if (initialized.value) return
+      initialized.value = true
       restoreSession()
     })
   }
@@ -126,6 +129,12 @@ export const useAuth = () => {
   }
 }
 
+// Достаём текст ошибки из значения типа unknown (catch)
+const getErrorMessage = (error: unknown): string => {
+  if (error instanceof Error) return error.message
+  return String(error)
+}
+
 // Типы
 interface User {
   id: string
@@ -133,4 +142,11 @@ interface User {
   firstName: string
   lastName: string
   photoUrl: string
+}
+
+// Ответ эндпоинтов авторизации (/api/auth/*)
+interface AuthResponse {
+  success: boolean
+  user?: User
+  error?: string
 }

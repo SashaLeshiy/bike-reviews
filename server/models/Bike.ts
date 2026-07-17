@@ -7,6 +7,7 @@ const BikeSchema = new mongoose.Schema({
     unique: true
   },
   url: String,
+  link: String,
   image: String,
   name: String,
   commentsCount: {
@@ -21,4 +22,4 @@ const BikeSchema = new mongoose.Schema({
   updatedAt: Date
 })
 
-export default mongoose.model('Bike', BikeSchema)
+export default mongoose.models.Bike || mongoose.model('Bike', BikeSchema)
